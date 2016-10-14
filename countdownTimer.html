@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <title>React - CountDown</title>
+
+    <style>
+        body {
+            background-color: DarkViolet;
+            display: flex;
+            justify-content: center;
+            height: 98vh;
+            align-items: center;
+        }
+
+        .inline {
+            font-weight: bold;
+        }
+
+        #timer div,
+        #timer span {
+            display: flex;
+            font-size: 150%;
+            font-family: sans-serif;
+            color: white;
+            padding: 5px;
+        }
+    </style>
+
+</head>
+
+<body translate="no">
+
+    <div id='timer'></div>
+
+    <script src='js/react/0.14.7/react-0.14.7.min.js'></script>
+    <script src='js/react/0.14.7/react-dom-0.14.7.min.js'></script>
+
+    <script>
+        "use strict";
+
+        // countdown
+
+        var CountDown = React.createClass({
+            displayName: "CountDown",
+
+            timer: null,
+
+            getInitialState: function getInitialState() {
+                return {
+                    daysLeft: null,
+                    hoursLeft: null,
+                    minutesLeft: null
+                };
+            },
+
+            update: function update() {
+                var formattedGivenDate = new Date(this.props.toDate);
+                var today = new Date();
+
+                var msDiff = formattedGivenDate - today;
+                var days = parseInt(msDiff / (24 * 3600 * 1000));
+                var hours = parseInt(msDiff / (3600 * 1000) - days * 24);
+                var mins = parseInt(msDiff / (60 * 1000) - days * 24 * 60 - hours * 60);
+
+                this.setState({
+                    daysLeft: days,
+                    hoursLeft: hours,
+                    minutesLeft: mins
+                });
+            },
+
+            componentDidMount: function componentDidMount() {
+                this.update();
+                this.timer = setInterval(this.update, 1000);
+            },
+
+            componentWillUnmount: function componentWillUnmount() {
+                clearInterval(this.timer);
+            },
+
+            render: function render() {
+                return React.createElement(
+                    "div",
+                    null,
+                    React.createElement(
+                        "div", {
+                            className: "inline"
+                        },
+                        " ",
+                        this.state.daysLeft,
+                        React.createElement(
+                            "div", {
+                                className: "timer-text"
+                            },
+                            "Days"
+                        ),
+                        " "
+                    ),
+                    React.createElement(
+                        "div", {
+                            className: "inline"
+                        },
+                        " ",
+                        this.state.hoursLeft,
+                        React.createElement(
+                            "div", {
+                                className: "timer-text"
+                            },
+                            "Hours"
+                        ),
+                        " "
+                    ),
+                    React.createElement(
+                        "div", {
+                            className: "inline"
+                        },
+                        " ",
+                        this.state.minutesLeft,
+                        React.createElement(
+                            "div", {
+                                className: "timer-text"
+                            },
+                            "Minutes"
+                        ),
+                        " "
+                    )
+                );
+            }
+        });
+
+        var d = new Date();
+        d.setUTCMonth(d.getUTCMonth() + 3);
+        d = d.toISOString().substring(0, 10);
+        //Render
+        ReactDOM.render(React.createElement(CountDown, {
+            toDate: d
+        }), document.getElementById('timer'));
+    </script>
+
+</body>
+
+</html>
